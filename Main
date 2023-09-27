@@ -1,0 +1,183 @@
+# Capstone Project
+# Movie data analysis
+
+
+# import numpy and pandas
+import numpy as np
+import pandas as pd
+# import data file
+df = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv')
+# test data file
+df
+
+# TASK 1
+#display number of rows and columns
+
+df.info()
+# 20 columns, 4803 rows
+# other way to find rows and columns
+df.shape
+# TASK 1 CONTINUED
+# display tiles and genres of first 50 movies from dataset
+
+# 3 genres, 8 original_title
+
+first50 = df.loc[:,['genres','original_title']].head(50)
+first50
+from platform import python_version
+
+print(python_version())
+# TASK 2
+# Identify columns with null values and perform treatment
+
+df.isnull().sum()
+
+# tagline and homepage show nulls values - 844 and 3091, respectively
+# drop null columns
+
+df.dropna(axis=1)
+# TASK 3
+# Display movie categories that have a budget greater than 220k
+
+# movies with budget of 220k or over
+mb = df[(df.budget >= 220000)]
+mb
+
+# display movie categories
+# pull list of genres from column
+
+print(mb['genres'])
+# TASK 4
+# Display movie categories where revenue is greater than 961m
+
+hr = df[df['revenue'] > 961000000]
+print(hr['genres'])
+# TASK 5
+#remove rows with value of 0 from both budget and revenue columns
+
+df=df[df.budget>0]
+df=df[df.revenue>0]
+len(df)
+# TASK 6
+# list top 10 movies with highest revenues and top 10 with least budget
+
+# find top 10 revenue
+t10r = df.nlargest(10, 'revenue')
+# print the top 10 revenue
+print("The top 10 movies with the highest revenue are:")
+print(t10r[['title','revenue']])
+
+# find top 10 with least budget
+lb = df.nsmallest(10, 'budget')
+print("The top 10 movies with the smallest budget are:")
+print(lb[['title', 'budget']])
+# TASK 7
+# show correlation between movie popularity and budget
+
+import seaborn as sns
+sns.scatterplot(x='budget', y='popularity', data=df)
+
+#correlation coefficient
+
+corr = np.corrcoef(df['budget'], df['popularity'])[0,1]
+
+print("The correlation between popularity and budget is", corr)
+
+# define analysis
+
+if corr > 0.5:
+    print("There is a strong positive correlation between popularity and budget.")
+elif corr < -0.5:
+    print("There is a strong negative correlation between popularity and budget.")
+elif -0.5 <= corr <= 0.5:
+    print("There is a weak or no correlation between popularity and budget.")
+# TASK 8
+# display names of all production companies along with the number of times they appear in the dataset
+
+df = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv')
+df['production_companies'] = df['production_companies'].str.extract(r'\"name\": \"(.+?)\"')
+
+company_occ = df['production_companies'].value_counts().reset_index()
+
+
+company_occ.columns = ['Name', 'Occurence']
+
+print(f"{company_occ.to_string(index=False)}")
+# TASK 9 
+# Top 25 production companies based on number of movies they have produced in descending order of number movies produced
+
+
+df = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv')
+
+df['production_companies'] = df['production_companies'].str.extract(r'\"name\": \"(.+?)\"')
+
+
+
+company_occ = df['production_companies'].value_counts().reset_index()
+
+top_25 = company_occ.nlargest(25, 'production_companies')
+print("The top 25 production companies are:")
+print(top_25.to_string(index=False))
+# TASK 10
+#sort data in descentindg order based on revenue
+# top 500 movies based on revenue
+
+measures = ['budget', 'revenue', 'runtime']
+df500 = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv', skipinitialspace=True, usecols=measures)
+m500 = df500.sort_values(by=['revenue'], ascending = False).head(500)
+print(m500.to_string(index=False))  
+# Task 10 continued
+import statistics as st
+
+
+mean_values = m500.mean()
+median_values = m500.median()
+mode_values = m500.mode().iloc[0]
+
+print("Mean:")
+print(mean_values)
+print("\nMedian:")
+print(median_values)
+print("\nMode:")
+print(mode_values)
+# continue on with task 10 by showing outlier analysis
+
+import matplotlib.pyplot as plt
+
+revenue = m500['revenue'].tolist()
+budget = m500['budget'].tolist()
+runtime = m500['runtime'].tolist()
+
+outanalysis = plt.figure(figsize = (20, 7))
+axis = outanalysis.add_axes([0, 0, 1, 1])
+
+plt.boxplot([runtime], vert=0)
+axis.set_yticklabels(['runtime'])
+
+plt.show()
+# boxplot for budget and runtime
+
+outanalysis = plt.figure(figsize = (20, 7))
+axis = outanalysis.add_axes([0, 0, 1, 1])
+plt.boxplot([revenue, budget], vert=0)
+axis.set_yticklabels(['revenue', 'budget'])
+
+plt.show
+# TASK 11
+# Identify and display the names of the movies along with their run times
+# use task 10
+import numpy as np
+import statistics as st
+
+measures2 = ['original_title', 'runtime']
+df500r = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv', skipinitialspace=True, usecols=measures2)
+runtime = df500r.sort_values(by=['runtime'], ascending = False).head(500)
+print(f"{runtime.to_string(index=False)}")
+# show movies with above average runtime
+runtime.describe()
+
+# average runtime is 150.704
+# display names of movies that have above average runtime
+import re
+
+runtime[runtime.runtime > 150.704]
