@@ -1,0 +1,112 @@
+# Extra
+# separate json to find count of values in genre
+
+
+# movies with budget of 220k or over
+#mb = df[(df.budget >= 220000)]
+#mb
+
+# display movie categories
+# pull list of genres from column
+
+#print(mb['genres'])
+
+#find value counts of genres
+#id_counts = mb['genres'].value_counts()
+#print(id_counts)
+
+import json
+
+genre_counts = {}
+
+for index, row in mb.iterrows():
+    genres_json = json.loads(row['genres'])
+    for genre in genres_json:
+        genre_id = genre['id']
+        genre_name = genre['name']
+        # print(f" Genre ID: {genre_id}, Genre Name: {genre_name}")
+        if genre_name not in genre_counts:
+            genre_counts[genre_name] = 0
+        genre_counts[genre_name] += 1
+        
+for genre_name, count in genre_counts.items():
+    print(f"Genre Name: {genre_name}, Occurrence: {count}")
+# EXTRA
+# Task 1 prettier
+genre_counts = {}
+
+for index, row in df.iterrows():
+    genres_json = json.loads(row['genres'])
+    original_title = row['original_title']
+   
+    for genre in genres_json:
+        genre_id = genre['id']
+        genre_name = genre['name']
+        if genre_id not in genre_counts:
+            genre_counts[genre_id] = {'count': 0, 'revenue': 0, 'titles': [], 'name': 0}
+            genre_counts[genre_id]['count'] += 1
+            genre_counts[genre_id]['titles'].append(original_title)
+            genre_counts[genre_id]['name'] = genre_name
+
+for genre_id, info in genre_counts.items():
+    count = info['count']
+
+    titles = ', '.join(info['titles'])
+    name = info['name']
+    print(f"Genre: {name} <==> Titles: {titles}")
+    print(f"Movie: {name}, Genre ID: {genre_name}, Occurrence: {count}, Revenue: {revenue}")
+# Specify the budget amount
+revenue_amount = 961000000
+# Filter the data based on the budget amount
+filtered_data = df[df['revenue'] > revenue_amount]
+# Parse the genres JSON and count the occurrences of each genre
+genre_counts = {}
+for index, row in filtered_data.iterrows():
+    genres_json = json.loads(row['genres'])
+    revenue = row['revenue']
+    original_title = row['original_title']
+   
+    for genre in genres_json:
+        genre_id = genre['id']
+        genre_name = genre['name']
+        if genre_id not in genre_counts:
+            genre_counts[genre_id] = {'count': 0, 'revenue': 0, 'titles': [], 'name': 0}
+        genre_counts[genre_id]['count'] += 1
+        genre_counts[genre_id]['revenue'] += revenue
+        genre_counts[genre_id]['titles'].append(original_title)
+        genre_counts[genre_id]['name'] = genre_name
+ 
+# Print the genre occurrence counts, revenue, and original_title
+for genre_id, info in genre_counts.items():
+    count = info['count']
+    revenue = info['revenue']
+    titles = ', '.join(info['titles'])
+    name = info['name']
+    print(f"Genre Name: {name}, Genre ID: {genre_id}, Occurrences: {count}, Total Revenue: {revenue}, Titles: {titles}")
+# TAsk 10 with title names
+
+measures = ['original_title', 'budget', 'revenue', 'runtime']
+df500 = pd.read_csv('DS1_C7_Part1_Data_Analysis_Using_Python_Dataset.csv', skipinitialspace=True, usecols=measures)
+m500 = df500.sort_values(by=['revenue'], ascending = False).head(500)
+
+
+print(m500.to_string(index=False))
+# TASK 3
+# Display movie categories that have a budget greater than 220k
+
+# movies with budget of 220k or over
+mb = df[(df.budget >= 220000)]
+
+
+genre_counts = {}
+genre_list = []
+print("list of genres <==> budget")
+for index, row in mb.iterrows():
+    genres_json = json.loads(row['genres'])
+    original_title = row['original_title']
+    budget = row['budget']
+    for name in genres_json:
+        genre_list.append(name['name'])
+        print(' '.join(genre_list), "<==>", budget)
+    genre_list = []
+    
